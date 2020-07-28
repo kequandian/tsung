@@ -1,0 +1,159 @@
+<?xml version="1.0"?>
+<!DOCTYPE tsung SYSTEM "/usr/share/tsung/tsung-1.0.dtd">
+<tsung loglevel="notice" version="1.0">
+  <clients>
+    <client host="localhost" use_controller_vm="false" />
+  </clients>
+  <servers>
+    <server host="39.108.14.206" port="8089" type="tcp"></server>
+  </servers>
+  <load>
+    <!-- <arrivalphase phase="1" duration="10" unit="minute">
+      <session_setup name="zd-login"        probability="100"/>
+      <users maxnumber="20" interarrival="0.1" unit="second"></users>
+    </arrivalphase> -->
+    <arrivalphase phase="1" duration="15" unit="minute">
+      <session_setup name="category-add"        probability="100"/>
+      <users maxnumber="33" interarrival="0.1" unit="second"></users>
+    </arrivalphase>
+  </load>
+
+  <options>
+    <option name="connect_timeout" value="5000"></option>
+  </options>
+
+  <sessions>
+    <session name="zd-login" probability="0" type="ts_http">
+      <transaction name="login">
+        <request subst="true">
+          <dyn_variable name="access_token" jsonpath="$.data.accessToken"/>
+          <http url="/api/oauth/login" method="POST" version="1.1" contents="{&quot;account&quot;:&quot;admin&quot;,&quot;password&quot;:&quot;111111&quot;,&quot;remember&quot;:true}">
+            <http_header name="Content-Type" value="application/json"/>            
+          </http>
+        </request>
+        <!-- <thinktime value="1" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/notice/notices?pageSize=5&amp;enabled=1" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="2" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/wf/instances?pageSize=5&amp;status=VERIFYING" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="3" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/ticket/reports/verifiedTickets?pageSize=5" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="4" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/doc?pageSize=5" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="5" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/adm/equipment/equipments/aboutToScrap?pageSize=5" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="6" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/adm/path/equipment/equipments/faultEquipments?pageSize=5" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+	    <!-- <thinktime value="7" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/adm/path/equipment/equipments/normalLongTimeEquipments?pageSize=5" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="8" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/ticket/ticket_executions/warnings?pageSize=5" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="9" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/adm/path/equipment/equipments/noFaultCompareToLastTime?pageSize=5" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="10" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/ticket/ticket_plans/warnings?pageSize=5" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="11" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/account/profile" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="12" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/account/profile" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+        <!-- <thinktime value="13" random="true"></thinktime> -->
+        <request subst="true">
+          <http url="/api/crud/dashborad?pageSize=10" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer %%_access_token%%"/>
+          </http>
+        </request>
+      </transaction>
+    </session>
+  
+    <session name="category-add" probability="0" type="ts_http">
+	  <!-- 动态变量可以是随机字符串 -->
+      <setdynvars sourcetype="random_string" length="6">
+        <var name="rndstring" />
+      </setdynvars>
+	  <setdynvars sourcetype="random_string" length="8">
+        <var name="rndstring2" />
+      </setdynvars>
+	  <!-- 随机数 -->
+	  <setdynvars sourcetype="random_number" start="0" end="100">
+        <var name="rndint" />
+      </setdynvars>
+      <!-- full url with server name, this overrides the "server" config value -->
+      <transaction name="add">
+        <request subst="true">
+          <http url="/api/categories" method="POST" version="1.1" contents="{&quot;identifier&quot;:&quot;equipment&quot;,&quot;name&quot;:&quot;%%_rndstring%%&quot;,&quot;code&quot;:&quot;%%_rndstring2%%&quot;,&quot;sortorder&quot;:%%_rndint%%}" >
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ0ZW5hbnRJZCI6Ijg3NjcwODA4MjQzNzE5NzgyNCIsInVzZXJJZCI6Ijg3NjcwODA4MjQzNzE5NzgyNyIsImFjY291bnQiOiJhZG1pbiIsImlhdCI6MTU3NDQ4MDkzMSwianRpIjoiODc2NzA4MDgyNDM3MTk3ODI3Iiwic3ViIjoiYWRtaW4iLCJleHAiOjE1NzQ3NDAxMzF9.RF2hLVenWDo52D7RiyJWsR5RzeryqE-SvOs1KX6oWhwLvPqZvUIaiCXwPZE6SPnc2ZTmgOUvVRFB5VDMhcFClQ"/>
+          </http>
+        </request>
+        <request>
+          <http url="/api/categories/all/tree?identifier=equipment" method="GET" version="1.1">
+            <http_header name="Content-Type" value="application/json"/>
+            <http_header name="Authorization" value="Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ0ZW5hbnRJZCI6Ijg3NjcwODA4MjQzNzE5NzgyNCIsInVzZXJJZCI6Ijg3NjcwODA4MjQzNzE5NzgyNyIsImFjY291bnQiOiJhZG1pbiIsImlhdCI6MTU3NDQ4MDkzMSwianRpIjoiODc2NzA4MDgyNDM3MTk3ODI3Iiwic3ViIjoiYWRtaW4iLCJleHAiOjE1NzQ3NDAxMzF9.RF2hLVenWDo52D7RiyJWsR5RzeryqE-SvOs1KX6oWhwLvPqZvUIaiCXwPZE6SPnc2ZTmgOUvVRFB5VDMhcFClQ"/>
+          </http>
+        </request>
+      </transaction>
+    </session>
+
+  </sessions>
+  
+</tsung>
